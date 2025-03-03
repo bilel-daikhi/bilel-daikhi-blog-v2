@@ -1,0 +1,10 @@
+.navbar.sticky-top {
+  background-color: rgb(255, 255, 255);
+  position: sticky;
+  top: 0;
+  z-index: 1030; /* Ensure it's above other content */
+  box-shadow: 0 4px 2px -2px gray; /* Optional shadow for better visibility */
+}
+.navbar-light .navbar-nav .nav-link.active {
+  color: #1700ff !important;
+}
