@@ -19,7 +19,7 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
       - name: Install Dependencies
-        run: npm install
+        run: npm install --legacy-peer-deps
       - name: Build
         env:
           CI: false
