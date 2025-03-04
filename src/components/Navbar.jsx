@@ -30,7 +30,7 @@ export default function Navbar() {
     <>
  <nav className="navbar navbar-expand-lg navbar-light sticky-top">
  <NavLink className="navbar-brand" to="/">
-     <h1 className="navbar-brand">Mrayti 7aboubi w rou7i ana</h1>
+      <img src="/logo.png" alt="Bilel Daikhi Blog" style={{ height: '80px' }} />
       </NavLink>
       <button
         className="navbar-toggler"
