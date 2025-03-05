@@ -65,7 +65,7 @@ export default function Navbar() {
               Contact
             </NavLink>
           </li> 
-          <li className="nav-item">
+          {user && ( <li className="nav-item">
             <NavLink
               className="nav-link px-lg-3 py-3 py-lg-4"
               to="/categories"
@@ -73,7 +73,7 @@ export default function Navbar() {
             >
               Categories
             </NavLink>
-          </li> 
+          </li> )}
           <li className="nav-item">
             <NavLink
               className="nav-link px-lg-3 py-3 py-lg-4"
@@ -83,7 +83,7 @@ export default function Navbar() {
               About
             </NavLink>
           </li>
-          <li className="nav-item">
+          {user && (   <li className="nav-item">
             <NavLink
               className="nav-link px-lg-3 py-3 py-lg-4"
               to="/tags"
@@ -91,7 +91,7 @@ export default function Navbar() {
             >
               Tags
             </NavLink>
-          </li>
+          </li>)}
          
           {user ? (<>
             <li className="nav-item">
