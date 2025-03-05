@@ -115,8 +115,8 @@ export default function CurrentPost() {
                       </p>
                       <div className="contacts d-flex justify-content-end">
                         <Link to="mailto:bilel.daikhi@gmail.com" title="Email" className="mr-3"><i className="fas fa-envelope"></i></Link>
-                        <Link to="https://www.sbsa-solutions.com" target="_blank" title="Website" className="mr-3"><i className="fas fa-globe"></i></Link>
-                        <Link to="https://linkedin.com/in/bileldaikhi" target="_blank" title="LinkedIn"><i className="fab fa-linkedin"></i></Link>
+                        <Link to="https://bilel-daikhi-portfolio.web.app" target="_blank" title="Website" className="mr-3"><i className="fas fa-globe"></i></Link>
+                        <Link to="https://www.linkedin.com/in/bilel-daikhi" target="_blank" title="LinkedIn"><i className="fab fa-linkedin"></i></Link>
                       </div>
                     </div>
                   </div>
