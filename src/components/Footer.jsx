@@ -65,8 +65,8 @@ export default function Footer() {
                   <span className="text-color h6"><strong>Phone:</strong> +216 22 605 020</span>
                 </Link>
                 <br/>
-                <Link to="mailto:sbsa.business.solutions@gmail.com">
-                <span className="text-color h6">  <strong>Email:</strong> sbsa.business.solutions@gmail.com</span>
+                <Link to="mailto:bilel.daikhi@gmail.com">
+                <span className="text-color h6">  <strong>Email:</strong> bilel.daikhi@gmail.com</span>
                   </Link>
                  
 

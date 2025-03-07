@@ -14,9 +14,10 @@ export default function Contact() {
   const handleAddContact = (data) => {
     addContact({
       uid: id,
-      title: data.title,
-      desc: data.desc,
-      imageUrl: data.imageUrl,
+      title: data.name,
+      email: data.email,
+      subject: data.subject,
+      message: data.message,
     });
     reset();
   };
@@ -25,6 +26,13 @@ export default function Contact() {
     <section id="content">
       <div class="content-wrap">
         <div class="container clearfix">
+          <div className="heading-block center nobottomborder">
+            <h2>Let's Build Something Great Together</h2>
+            <span>
+              Reach out for collaborations, projects, or just a tech chat –
+              Expertise in Java Ecosystem &amp; Modern JavaScript Frameworks
+            </span>
+          </div>
           <div class="postcontent nobottommargin">
             <h3>Send me a Message</h3>
 
@@ -34,7 +42,7 @@ export default function Contact() {
               <form
                 class="nobottommargin"
                 id="template-contactform"
-                name="template-contactform"
+                onSubmit={handleSubmit(handleAddContact)}
               >
                 <div class="form-process"></div>
 
@@ -45,10 +53,16 @@ export default function Contact() {
                   <input
                     type="text"
                     id="template-contactform-name"
-                    name="template-contactform-name"
-                    value=""
-                    class="sm-form-control required"
+                    {...register("name", { required: true, maxLength: 120 })}
+                    className={`sm-form-control required ${
+                      errors.name ? "is-invalid" : ""
+                    }`}
                   />
+                  {errors.name && (
+                    <span className="error">
+                      Name is required and should be less than 120 characters
+                    </span>
+                  )}
                 </div>
 
                 <div class="col_one_third">
@@ -58,10 +72,17 @@ export default function Contact() {
                   <input
                     type="email"
                     id="template-contactform-email"
-                    name="template-contactform-email"
-                    value=""
-                    class="required email sm-form-control"
+                    {...register("email", {
+                      required: true,
+                      pattern: /^\S+@\S+$/i,
+                    })}
+                    className={`sm-form-control email required ${
+                      errors.email ? "is-invalid" : ""
+                    }`}
                   />
+                  {errors.email && (
+                    <span className="error">Email is not valide!</span>
+                  )}
                 </div>
 
                 <div class="clear"></div>
@@ -73,10 +94,14 @@ export default function Contact() {
                   <input
                     type="text"
                     id="template-contactform-subject"
-                    name="subject"
-                    value=""
-                    class="required sm-form-control"
+                    {...register("subject", { required: true, maxLength: 200 })}
+                    className={`sm-form-control required ${
+                      errors.subject ? "is-invalid" : ""
+                    }`}
                   />
+                  {errors.subject && (
+                    <span className="error">Subject is not valide!</span>
+                  )}
                 </div>
 
                 <div class="clear"></div>
@@ -86,24 +111,23 @@ export default function Contact() {
                     Message <small>*</small>
                   </label>
                   <textarea
-                    class="required sm-form-control"
+                    className={`sm-form-control required ${
+                      errors.subject ? "is-invalid" : ""
+                    }`}
                     id="template-contactform-message"
-                    name="template-contactform-message"
+                    {...register("message", {
+                      required: true,
+                      maxLength: 3000,
+                    })}
                     rows="6"
                     cols="30"
                   ></textarea>
+                  {errors.message && (
+                    <span className="error">Message is not valide!</span>
+                  )}
                 </div>
 
-                <div class="col_full hidden">
-                  <input
-                    type="text"
-                    id="template-contactform-botcheck"
-                    name="template-contactform-botcheck"
-                    value=""
-                    class="sm-form-control"
-                  />
-                </div>
-
+                <div class="clear"></div>
                 <div class="col_full">
                   <button
                     class="button button-3d nomargin"

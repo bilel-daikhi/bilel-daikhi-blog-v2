@@ -75,7 +75,7 @@ const Categories = () => {
               placeholder="Category description"
             ></textarea>
           </div>
-          <button className="btn btn-primary mt-2" onClick={handleAddCategory}>
+          <button className="btn btn-primary mt-2" type="submit">
             Add Category
           </button>
         </form>
