@@ -7,6 +7,7 @@ import Contact from "../layouts/Contact";
 import NewPost from "../layouts/NewPost";
 import About from "../layouts/About";
 import LOGIN from "../layouts/auth/Login";
+import ErrorPage from "../layouts/Error";
 import TagsList from "../components/tags/TagsList";
 import Categories from "../layouts/categories";
 
@@ -19,7 +20,10 @@ export const TAGS_PATH = "/tags";
 export const ADD_POST_PATH = "/add-post";
 export const FIND_POST_PATH = "/posts/:postId";
 
-export const router = createBrowserRouter([{element:<Layout />,children:[
+export const router = createBrowserRouter([{
+  element:<Layout />,
+  errorElement: <ErrorPage />,
+  children:[
   {path: ROOT_PATH, element: <Home />},
   {path: LOGIN_PATH, element: <LOGIN />},
   {path: CONTACT_PATH, element: <Contact />},
