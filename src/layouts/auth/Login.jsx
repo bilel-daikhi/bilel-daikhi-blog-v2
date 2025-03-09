@@ -7,7 +7,7 @@ import {
   emailValidate,
   passwordValidate,
 } from "../../utils/form-validation.js";
-import { useGoogleLogin, useLogin } from "../../hooks/auths.js";
+import { useGoogleLogin, useLogin } from "../../hooks/auths.jsx";
 import GoogleButton from "react-google-button";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
