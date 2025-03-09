@@ -50,7 +50,7 @@ export default function PostList() {
 
                       ))}
 
-                      <Pagination currentPage={page} totalPages={totalPages} /> 
+                  {totalPages > 1 &&    <Pagination currentPage={page} totalPages={totalPages} /> }
 
                   </div>
                   

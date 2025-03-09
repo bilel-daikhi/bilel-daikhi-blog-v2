@@ -43,7 +43,7 @@ export function useAddPost() {
 
   return { addPost, isLoading };
 }
-const PAGE_SIZE = 2; // Number of posts per page
+const PAGE_SIZE = 10; // Number of posts per page
 export function usePosts(page = 1, tag = null, category = null) {
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
