@@ -1,7 +1,7 @@
  
 import {createBrowserRouter} from "react-router-dom";
 import Home from "../layouts";
-import CurrentPost from "../layouts/CurrentPost";
+import SelectedPost from "../layouts/SelectedPost";
 import { Layout } from "../layouts/Layout";
 import Contact from "../layouts/Contact"; 
 import NewPost from "../layouts/NewPost";
@@ -29,7 +29,7 @@ export const router = createBrowserRouter([{
   {path: CONTACT_PATH, element: <Contact />},
   {path: CATEGORIES_PATH, element: <Categories />},
   {path: ABOUT_PATH, element: <About />},
-  {path: FIND_POST_PATH, element: <CurrentPost />},
+  {path: FIND_POST_PATH, element: <SelectedPost />},
   {path: ADD_POST_PATH, element: <NewPost />},
   {path: TAGS_PATH, element: <TagsList />},
 ]}

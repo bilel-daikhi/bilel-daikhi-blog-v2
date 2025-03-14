@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { db } from "../lib/firebase";
 import { useCollectionData } from "react-firebase-hooks/firestore";
+import { toast } from "react-toastify";
 import {
   arrayRemove,
   arrayUnion,
@@ -20,7 +21,7 @@ import {
 } from "firebase/firestore";
 export function useAddPost() {
   const [isLoading, setLoading] = useState(false);
-  // const toast = useToast();
+ 
 
   async function addPost(post) {
     setLoading(true);
@@ -31,13 +32,11 @@ export function useAddPost() {
       date: Date.now(),
       likes: [],
     });
-    /*        toast({
-            title: "Post added successfully!",
-            status: "success",
-            isClosable: true,
-            position: "top",
-            duration: 5000,
-        });*/
+     toast.success("Post added successfully!", {
+                  isClosable: true,
+                  autoClose: 3000,
+                });
+          
     setLoading(false);
   }
 
@@ -154,14 +153,11 @@ export function useDeletePost(id) {
 
       // Delete post document
       await deleteDoc(doc(db, "posts", id));
-      /*          toast({
-                title: "Post deleted!",
-                status: "info",
-                isClosable: true,
-                position: "top",
-                duration: 5000,
-            });
-*/
+      toast.success("Post deleted!", {
+        isClosable: true,
+        autoClose: 3000,
+      });
+     
       setLoading(false);
     }
   }

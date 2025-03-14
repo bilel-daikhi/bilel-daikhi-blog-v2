@@ -44,9 +44,9 @@ export default function PostList() {
 
                   <div id="posts">
 
-                      {posts && posts.map(post => (
+                      {posts && posts.map((post,index) => (
 
-                       <SinglePost post={post} />
+                       <SinglePost key={index} post={post} />
 
                       ))}
 

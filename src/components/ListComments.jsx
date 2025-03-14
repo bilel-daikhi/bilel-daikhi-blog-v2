@@ -1,10 +1,10 @@
 
 import {  useComments } from "../hooks/comments";
-import SingleComment from "../components/comments/SingleComment";
+import CommentCard from "./comments/CommentCard";
 import NewComment from "../components/comments/NewComment";
 
 export function ListComments({postId}) {
-    const {comments, isLoading} = useComments();
+    const {comments, isLoading} = useComments(postId);
     // const {user, isLoading: userLoading} = useUser();
     if (isLoading)
       return (
@@ -21,10 +21,10 @@ export function ListComments({postId}) {
     return (
   <div id="comments" className="clearfix">
 
-                    <h3 id="comments-title"><span>{comments ?comments.length : 0}</span> Comments</h3>
+                    <h3 id="comments-title"><span>{comments ?comments.length : 0}</span> Comment(s)</h3>
 
                      <ol className="commentlist clearfix">
-                {comments.map(comment =>   <SingleComment comment={comment} />)}
+                {comments && comments.map((comment,index) =>   <CommentCard key={index} comment={comment} />)}
                   
 
                  
@@ -32,7 +32,7 @@ export function ListComments({postId}) {
 
                     <div className="clear"></div>
 
-                 <NewComment/>
+                 <NewComment postId={postId}/>
 
                   </div>
     

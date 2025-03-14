@@ -2,6 +2,7 @@ import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { db } from "../lib/firebase";
 import { useCollectionData } from "react-firebase-hooks/firestore";
+import { toast } from "react-toastify";
 import {
   collection,
   deleteDoc,
@@ -11,40 +12,39 @@ import {
   setDoc,
   where,
 } from "firebase/firestore";
-export function useAddComment() {
+export function useAddComment(postId) {
   const [isLoading, setLoading] = useState(false);
   // const toast = useToast();
 
   async function addComment(comment) {
     setLoading(true);
     const id = uuidv4();
+    console.log('comment: '+JSON.stringify(comment));
     await setDoc(doc(db, "comments", id), {
       ...comment,
       id,
       date: Date.now(),
-      comments: [],
+      postId:postId.postId
     });
-    /*        toast({
-            title: "Post added successfully!",
-            status: "success",
-            isClosable: true,
-            position: "top",
-            duration: 5000,
-        });*/
+    toast.success("Comment added successfully!", {
+              isClosable: true,
+              autoClose: 3000,
+            });
+             
     setLoading(false);
   }
 
   return { addComment, isLoading };
 }
 
-export function useComments(uid = null) {
-  const q = uid
+export function useComments(postId = null) {
+  const q = postId
     ? query(
         collection(db, "comments"),
         orderBy("date", "desc"),
-        where("uid", "==", uid)
+        where("postId", "==", postId)
       )
-    : query(collection(db, "comments"), orderBy("date", "desc"));
+    : null;
   const [comments, isLoading, error] = useCollectionData(q);
   if (error) throw error;
   return { comments, isLoading };
@@ -52,25 +52,30 @@ export function useComments(uid = null) {
 
 export function useDeleteComment(id) {
   const [isLoading, setLoading] = useState(false);
-  //    const toast = useToast();
+ 
 
   async function deleteComment() {
     const res = window.confirm("Are you sure you want to delete this comment?");
 
     if (res) {
       setLoading(true);
-
+try{
       // Delete post document
       await deleteDoc(doc(db, "comments", id));
-      /*          toast({
-                title: "Post deleted!",
-                status: "info",
-                isClosable: true,
-                position: "top",
-                duration: 5000,
-            });
-*/
+      toast.success("Comment deleted!", {
+        isClosable: true,
+        autoClose: 3000,
+      });
+      
+    } catch (error) {
+      toast.error("Delete Comment failed!", {
+        isClosable: true,
+        autoClose: 3000,
+      });
+ 
+    } finally {
       setLoading(false);
+    }
     }
   }
 

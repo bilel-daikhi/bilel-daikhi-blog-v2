@@ -13,13 +13,13 @@ import { ListComments } from "../components/ListComments";
 import PostTags from "../components/posts/PostTags";
 import PopularPosts from "../components/posts/PopularPosts";
 import SyntaxHighlighter from "react-syntax-highlighter";
-import CurrentPostTags from "../components/CurrentPostTags";
+import SelectedPostTags from "../components/SelectedPostTags";
  
 
-export default function CurrentPost() {
+export default function SelectedPost() {
     const {user, isLoading: authLoading} = useAuth();
   const {postId} = useParams();
-  const [currentPost, setCurrentPost] = useState([]);
+  const [selectedPost, setSelectedPost] = useState([]);
   const [tags, setTags] = useState([]);
  
  
@@ -28,7 +28,7 @@ export default function CurrentPost() {
  
   useEffect(() => {
     onSnapshot(doc(db, "posts", postId), snapshot => {
-      setCurrentPost({...snapshot.data(), id: snapshot.id});
+      setSelectedPost({...snapshot.data(), id: snapshot.id});
       setIsLiked(snapshot.data().likes.includes(user?.id));
        
   });
@@ -37,8 +37,7 @@ export default function CurrentPost() {
     postId,
     isLiked,
     uid: user?.id,
-  });
-  console.log(currentPost);
+  }); 
   return (
       <>
  
@@ -57,31 +56,31 @@ export default function CurrentPost() {
 
 
                     <div className="entry-title">
-                      <h2>{currentPost.title}</h2>
+                      <h2>{selectedPost.title}</h2>
                     </div>
 
                     <ul className="entry-meta clearfix">
-                      <li><i className="fa-solid fa-calendar-days"></i> {currentPost.date && formatDistanceToNow(currentPost?.date)} ago</li>
+                      <li><i className="fa-solid fa-calendar-days"></i> {selectedPost.date && formatDistanceToNow(selectedPost?.date)} ago</li>
                       <li><strong><i className="fa-solid fa-user"></i> Bilel Daikhi</strong></li>
                 
-                      <li>{user ? (<Link  onClick={toggleLike} size='md' isLoading={authLoading || isLoading}>  {isLiked ? <i className="fa-regular fa-heart mr-2"></i> : <i className="fa-solid fa-heart mr-2"></i> }  {currentPost.likes && currentPost.likes.length } Likes</Link>) : (<strong>{ currentPost.likes && currentPost.likes.length } Likes</strong>)}</li>
+                      <li>{user ? (<Link  onClick={toggleLike} size='md' isLoading={authLoading || isLoading}>  {isLiked ? <i className="fa-regular fa-heart mr-2"></i> : <i className="fa-solid fa-heart mr-2"></i> }  {selectedPost.likes && selectedPost.likes.length } Likes</Link>) : (<strong>{ selectedPost.likes && selectedPost.likes.length } Likes</strong>)}</li>
                  
                     </ul>
                     
                       <div className="entry-content notopmargin">
 
       
-     {currentPost &&   <div className="card">
+     {selectedPost &&   <div className="card">
           <div className="card-body">
-            {currentPost.blocks?.map((block, index) =>
+            {selectedPost.blocks?.map((block, index) =>
               block.type === "text" ? (
                 <div
-                  key={block.id}
+                  key={index}
                   className="prose mb-4"
                   dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(block.content) }}
                 />
               ) : (
-                <div key={block.id} className="mb-4">
+                <div key={index} className="mb-4">
                   <SyntaxHighlighter
                     language={block.language}
                     style={dracula}
@@ -97,7 +96,7 @@ export default function CurrentPost() {
         </div>}
   
                             
-                    {currentPost.tags &&  <CurrentPostTags post={currentPost}/>
+                    {selectedPost.tags &&  <SelectedPostTags post={selectedPost}/>
                        }
                     </div>
                   </div>
@@ -124,7 +123,7 @@ export default function CurrentPost() {
                   <div className="line"></div>
 
                  
-                <ListComments postId={postId}/>
+                <ListComments postId={selectedPost.id}/>
                 </div>
 
               </div>
