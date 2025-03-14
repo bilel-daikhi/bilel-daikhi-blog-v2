@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { useEffect } from "react";
 import GoToTopButton from "../components/GoToTopButton";
+import { ToastContainer } from "react-toastify";
 
 export const Layout = () => {
   const location = useLocation();
@@ -17,6 +18,7 @@ export const Layout = () => {
 
   return (
     <>
+    <ToastContainer />
       <Navbar />
       <section id="content">
         <Outlet />

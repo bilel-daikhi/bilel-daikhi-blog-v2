@@ -2,6 +2,7 @@ import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { db } from "../lib/firebase";
 import { useCollectionData } from "react-firebase-hooks/firestore";
+import { toast } from "react-toastify";
 import {
   arrayRemove,
   arrayUnion,
@@ -28,13 +29,11 @@ export function useAddCategory() {
       date: Date.now(),
       posts: [],
     });
-    /*        toast({
-            title: "Post added successfully!",
-            status: "success",
-            isClosable: true,
-            position: "top",
-            duration: 5000,
-        });*/
+    toast.success("Category added successfully!", {
+      isClosable: true,
+      autoClose: 3000,
+    });
+     
     setLoading(false);
   }
 
@@ -75,14 +74,11 @@ export function useDeleteCategory(id) {
 
       // Delete post document
       await deleteDoc(doc(db, "categories", id));
-      /*          toast({
-                title: "Post deleted!",
-                status: "info",
-                isClosable: true,
-                position: "top",
-                duration: 5000,
-            });
-*/
+      toast.success("Category deleted!", {
+        isClosable: true,
+        autoClose: 3000,
+      });
+      
       setLoading(false);
     }
   }

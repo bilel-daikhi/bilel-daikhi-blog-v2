@@ -20,6 +20,7 @@ const Register = () => {
       password: data.password,
       redirectTo: ROOT_PATH,
     });
+   
   }
   const ladelBtn = "Don' t be a stranger, sign up!";
   
@@ -68,6 +69,7 @@ const Register = () => {
                 className={`form-control ${errors.username ? 'is-invalid' : ''}`}
               />
               {errors.username && <div className="invalid-feedback">{errors.username.message}</div>}
+             
             </div>
 
             <div className="form-group">
@@ -101,12 +103,12 @@ const Register = () => {
 
             <div className="form-group nobottommargin">
               <button
-                className="btn btn-primary"
+                className={"btn btn-primary" + (isLoading ? " disable" : "")}
                 id="register-form-submit"
                 name="register-form-submit"
                 value="register"
               >
-                Register Now
+                 {isLoading ? " Loading..." : "Register Now"}
               </button>
             </div>
           </form>

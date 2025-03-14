@@ -56,28 +56,13 @@ export function useGoogleLogin() {
         isLoading: true,
         autoClose: 3000,
       });
-      /*  toast({
-                title: "You are logged in",
-                status: "success",
-                isClosable: true,
-                position: "top",
-                duration: 5000,
-            });*/
-      navigate(redirectTo);
+       navigate(redirectTo);
     } catch (error) {
       toast.error("Logging in failed", {
         isClosable: true,
         autoClose: 3000,
       });
-      /*   toast({
-                title: "Logging in failed",
-                description: error.message,
-                status: "error",
-                isClosable: true,
-                position: "top",
-                duration: 5000,
-            });*/
-      setLoadingGoogle(false);
+       setLoadingGoogle(false);
     } finally {
       setLoadingGoogle(false);
     }
@@ -133,15 +118,7 @@ export function useLogout() {
 
       navigate(LOGIN_PATH);
     }
-    // else {
-    //     toast({
-    //         title: "Having difficulty to logging out of you ",
-    //         status: "warning",
-    //         isClosable: true,
-    //         position: "bottom-left",
-    //         duration: 5000,
-    //     });
-  }
+    }
 
   return { logout, isLoading };
 }
@@ -186,10 +163,12 @@ export function useRegister() {
 
         navigate(redirectTo);
       } catch (error) {
+        console.log("error: " + JSON.stringify(error));
         toast.error("Signing Up failed", {
           isClosable: true,
           autoClose: 3000,
         });
+        
       } finally {
         setLoading(false);
       }

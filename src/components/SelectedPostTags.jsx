@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'; 
 import { usePostTags } from '../hooks/tags';
 
-const CurrentPostTags = ({ post }) => {
+const SelectedPostTags = ({ post }) => {
   const {tags,isLoading}=  usePostTags(post.tags)
     return (
         <div className="tagcloud clearfix bottommargin mt-3">
@@ -16,4 +16,4 @@ const CurrentPostTags = ({ post }) => {
     );
 };
 
-export default CurrentPostTags;
+export default SelectedPostTags;
