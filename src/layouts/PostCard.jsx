@@ -6,22 +6,23 @@ import {Link, Link as routerLink} from "react-router-dom";
 import { useUser } from "../hooks/user"; 
 import DOMPurify from "dompurify";
 import { useCategories } from "../hooks/categories";
-const SinglePost = ({post}) => {
+import { useComments } from "../hooks/comments";
+const PostCard = ({post}) => {
   const {user, isLoading: authLoading} = useAuth();
- 
-  const {id, likes,comments,category, uid} = post;
- 
+
+  const {id, likes,category, uid} = post;
+  const {comments, isCommentsLoading} = useComments(id); 
   const isLiked = likes.includes(user?.id);
   const {toggleLike, isLoading} = useToggleLike({
     id,
     isLiked,
     uid: user?.id,
   });
-  console.log('category: '+category);
+
   const {categories:selectedCategory, isLoading:isLoadingCategory} = useCategories(category);
   const {deletePost, isLoading: deleteLoading} = useDeletePost(post.id);
-  const {user: users, isLoading: userLoading} = useUser(post.uid);
-  
+  //const {user: users, isLoading: userLoading} = useUser(post.uid);
+   
   return (
     <div class="entry bf-gallery clearfix">
      <div class="entry-title">
@@ -34,7 +35,7 @@ const SinglePost = ({post}) => {
       <li><i className="fa-regular fa-calendar"></i> {formatDistanceToNow(post.date)} ago</li>
       <li><strong><i className="fa-solid fa-user"></i> Bilel Daikhi</strong></li>
       <li><strong><i className="fa-solid fa-tag"></i> {!isLoadingCategory && selectedCategory[0].name}</strong></li>
-      <li><strong><i className="fa-regular fa-comment"></i> {post.comments ? post.comments?.length : 0} Comments</strong></li>
+      <li><strong><i className="fa-regular fa-comment"></i> {comments ? comments.length : 0} Comments</strong></li>
        <li><Link onClick={toggleLike} size='md' isLoading={authLoading || isLoading}>
        {isLiked ? <i className="fa-regular fa-heart mr-1"></i>: <i className="fa-solid fa-heart mr-1"></i> }  
        {post.likes.length} Likes </Link></li>
@@ -63,4 +64,4 @@ const SinglePost = ({post}) => {
   );
 };
 
-export default SinglePost;
+export default PostCard;

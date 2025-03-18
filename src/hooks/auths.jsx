@@ -53,7 +53,7 @@ export function useGoogleLogin() {
         date: Date.now(),
       });
       toast.success("You are logged in", {
-        isLoading: true,
+        isClosable: true,
         autoClose: 3000,
       });
        navigate(redirectTo);
@@ -93,8 +93,7 @@ export function useLogin() {
         isClosable: true,
         autoClose: 3000,
       });
-
-      setLoading(false);
+ 
     } finally {
       setLoading(false);
     }

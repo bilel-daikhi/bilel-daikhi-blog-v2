@@ -8,7 +8,7 @@ import { dracula } from "react-syntax-highlighter/dist/esm/styles/prism";
 import DOMPurify from "dompurify";
 import { formatDistanceToNow, set } from "date-fns";
 import { useAuth } from "../hooks/auths";
-import { useToggleLike } from "../hooks/posts";
+import { usePostById, useToggleLike } from "../hooks/posts";
 import { ListComments } from "../components/ListComments";
 import PostTags from "../components/posts/PostTags";
 import PopularPosts from "../components/posts/PopularPosts";
@@ -17,27 +17,29 @@ import SelectedPostTags from "../components/SelectedPostTags";
  
 
 export default function SelectedPost() {
-    const {user, isLoading: authLoading} = useAuth();
-  const {postId} = useParams();
-  const [selectedPost, setSelectedPost] = useState([]);
-  const [tags, setTags] = useState([]);
- 
- 
- 
-  const [isLiked, setIsLiked]= useState(Boolean);
- 
-  useEffect(() => {
-    onSnapshot(doc(db, "posts", postId), snapshot => {
-      setSelectedPost({...snapshot.data(), id: snapshot.id});
-      setIsLiked(snapshot.data().likes.includes(user?.id));
-       
-  });
-  }, [ ]);
-  const {toggleLike, isLoading} = useToggleLike({
-    postId,
-    isLiked,
-    uid: user?.id,
-  }); 
+  const {user, isLoading: authLoading} = useAuth();
+    const {postId} = useParams();
+    const { post, isPostLoading, error} = usePostById(postId);
+    
+    // Always call hooks unconditionally at the top
+    const {toggleLike, isLoading} = useToggleLike({
+        id: postId,
+        isLiked: post?.likes?.includes(user?.id) ?? false,
+        uid: user?.id,
+    });
+
+    // Handle loading state
+    if (isPostLoading) return <div>Loading post...</div>;
+    
+    // Handle error state
+    if (error) return <div>Error loading post: {error}</div>;
+
+    // Handle case where post is null/undefined
+    if (!post) return <div>Post not found</div>;
+
+    // Destructure with default values AFTER null check
+    const { likes = [], category, uid } = post; 
+
   return (
       <>
  
@@ -56,23 +58,25 @@ export default function SelectedPost() {
 
 
                     <div className="entry-title">
-                      <h2>{selectedPost.title}</h2>
+                      <h2>{post.title}</h2>
                     </div>
 
                     <ul className="entry-meta clearfix">
-                      <li><i className="fa-solid fa-calendar-days"></i> {selectedPost.date && formatDistanceToNow(selectedPost?.date)} ago</li>
+                      <li><i className="fa-solid fa-calendar-days"></i> {post.date && formatDistanceToNow(post?.date)} ago</li>
                       <li><strong><i className="fa-solid fa-user"></i> Bilel Daikhi</strong></li>
-                
-                      <li>{user ? (<Link  onClick={toggleLike} size='md' isLoading={authLoading || isLoading}>  {isLiked ? <i className="fa-regular fa-heart mr-2"></i> : <i className="fa-solid fa-heart mr-2"></i> }  {selectedPost.likes && selectedPost.likes.length } Likes</Link>) : (<strong>{ selectedPost.likes && selectedPost.likes.length } Likes</strong>)}</li>
-                 
+                    <li><Link onClick={toggleLike} size='md' isLoading={authLoading || isLoading}>
+                       { post?.likes?.includes(user?.id) ? <i className="fa-regular fa-heart mr-1"></i>: <i className="fa-solid fa-heart mr-1"></i> }  
+                       {post.likes?.length} Likes </Link></li>
+                   
+                   
                     </ul>
                     
                       <div className="entry-content notopmargin">
 
       
-     {selectedPost &&   <div className="card">
+     {post &&   <div className="card">
           <div className="card-body">
-            {selectedPost.blocks?.map((block, index) =>
+            {post.blocks?.map((block, index) =>
               block.type === "text" ? (
                 <div
                   key={index}
@@ -96,7 +100,7 @@ export default function SelectedPost() {
         </div>}
   
                             
-                    {selectedPost.tags &&  <SelectedPostTags post={selectedPost}/>
+                    {post.tags &&  <SelectedPostTags post={post}/>
                        }
                     </div>
                   </div>
@@ -123,7 +127,7 @@ export default function SelectedPost() {
                   <div className="line"></div>
 
                  
-                <ListComments postId={selectedPost.id}/>
+                <ListComments postId={post.id}/>
                 </div>
 
               </div>

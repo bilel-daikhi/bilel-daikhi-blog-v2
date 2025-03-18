@@ -39,10 +39,11 @@ export default function Login() {
     const succeeded = await googleSignIn({
       redirectTo: ROOT_PATH,
     });
-    if (succeeded) reset();
-  }
-
-  const handleClick = () => setShow(!show);
+    if (succeeded) {
+      
+      reset();
+    }
+  } 
   return (
     <section id="content">
       <div class="content-wrap">

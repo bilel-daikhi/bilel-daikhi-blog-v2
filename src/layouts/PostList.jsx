@@ -1,8 +1,6 @@
-
- 
 import React, { useEffect } from "react";
 import {usePostByTag, usePosts} from "../hooks/posts";
-import SinglePost from "./SinglePost"; 
+import PostCard from "./PostCard"; 
 import {Pagination} from "../components/Pagination";
 import {SideMenu} from "../components/posts/SideMenu";
 import { Link, useLocation, useParams, useSearchParams } from "react-router-dom";
@@ -16,8 +14,6 @@ export default function PostList() {
   const { posts, isLoading, totalPages } = usePosts(page, tag || undefined, category || undefined);
  
   const {user, authLoading} = useAuth();
-
-  // const {user, isLoading: userLoading} = useUser();
   
   if (isLoading)
     return (
@@ -33,10 +29,14 @@ export default function PostList() {
 <>
 <div className="row mb-3">
 							<div class="col-6">
-              {user && (            <Link to="/add-post" className="button button-3d button-black mt-3 float-right "> Add New Post</Link>)}
+              {user && (      
+
+<Link to="/add-post" className="button button-3d button-black mt-3 float-right "> Add New Post</Link>)}
          
-                            </div></div>
-                            <div className="content-wrap">
+            </div>
+            </div>
+         
+         <div className="content-wrap">
             
           <div className="container clearfix">
 
@@ -46,7 +46,7 @@ export default function PostList() {
 
                       {posts && posts.map((post,index) => (
 
-                       <SinglePost key={index} post={post} />
+                       <PostCard key={index} post={post} />
 
                       ))}
 
