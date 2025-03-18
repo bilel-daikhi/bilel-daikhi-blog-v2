@@ -21,11 +21,7 @@ export default function Navbar() {
   //   onClose: onModalClose,
   // } = useDisclosure();
 
-  const Links = [
-    {id: 1, path: ROOT_PATH, name: "Home"},
-    {id: 2, path: LOGIN_PATH, name: "Sign in"},
-     
-  ];
+  
   return (
     <>
  <nav className="navbar navbar-expand-lg navbar-light sticky-top">
@@ -100,7 +96,7 @@ export default function Navbar() {
              <li className="nav-item">
               <NavLink
                 className="nav-link px-lg-3 py-3 py-lg-4"
-                to="/logout"
+                onClick={logout}
                 activeClassName="active"
               >
                 <i className="fa-solid fa-arrow-right-from-bracket"></i> 

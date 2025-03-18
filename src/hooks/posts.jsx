@@ -10,6 +10,7 @@ import {
   deleteDoc,
   doc,
   getCountFromServer,
+  getDoc,
   getDocs,
   limit,
   orderBy,
@@ -128,13 +129,21 @@ export function usePopularPosts() {
 
 export function useToggleLike({ id, isLiked, uid }) {
   const [isLoading, setLoading] = useState(false);
-
   async function toggleLike() {
     setLoading(true);
-    const docRef = doc(db, "posts", id);
-    await updateDoc(docRef, {
+    console.log("id", id);
+    console.log("isLiked", isLiked);
+    console.log("uid", uid);
+  
+    try{
+      const docRef = doc(db, "posts", id);
+      await updateDoc(docRef, {
       likes: isLiked ? arrayRemove(uid) : arrayUnion(uid),
     });
+  }catch(error){
+    console.error(JSON.stringify(error))
+    toast.error("An error occurred. Please try again later.");
+  }
     setLoading(false);
   }
 
@@ -163,4 +172,34 @@ export function useDeletePost(id) {
   }
 
   return { deletePost, isLoading };
+}
+export function usePostById(id) {
+  const [post, setPost] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchPost = async () => {
+      setIsLoading(true);
+      try {
+        const docRef = doc(db, "posts", id);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setPost({ id: docSnap.id, ...docSnap.data() });
+        } else {
+          setError("Post not found");
+        }
+      } catch (err) {
+        setError(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchPost();
+    }
+  }, [id]);
+
+  return { post, isLoading, error };
 }
