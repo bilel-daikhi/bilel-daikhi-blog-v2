@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import {usePostByTag, usePosts} from "../hooks/posts";
-import PostCard from "./PostCard"; 
+import PostCard from "../components/PostCard"; 
 import {Pagination} from "../components/Pagination";
 import {SideMenu} from "../components/posts/SideMenu";
 import { Link, useLocation, useParams, useSearchParams } from "react-router-dom";

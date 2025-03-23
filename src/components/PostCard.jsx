@@ -8,6 +8,7 @@ import DOMPurify from "dompurify";
 import { useCategories } from "../hooks/categories";
 import { useComments } from "../hooks/comments";
 import { Link } from "react-router-dom";
+import Likes from "./posts/Likes";
 
 const PostCard = ({ postId,autherId }) => {
   
@@ -43,9 +44,9 @@ const PostCard = ({ postId,autherId }) => {
     <div className="entry bf-gallery clearfix">
       <div className="entry-title">
         <h2>
-          <routerLink to={`/posts/${post?.id}`}>
+          <Link to={`/posts/${post?.id}`}>
             {post?.title}
-          </routerLink>
+          </Link>
         </h2>
       </div>
 
@@ -75,18 +76,8 @@ const PostCard = ({ postId,autherId }) => {
           </strong>
         </li>
         <li>
-          <Link 
-            onClick={toggleLike}
-            disabled={authLoading || isLikeLoading}
-             
-          >
-            {post?.likes?.includes(user?.id) ? (
-              <i className="fa-solid fa-heart mr-1 text-danger" />
-            ) : (
-              <i className="fa-regular fa-heart mr-1" />
-            )}
-            {post?.likes?.length || 0} Likes
-          </Link>
+        {post &&  <Likes post={post} user={user} fetchPost={fetchPost} />
+                   }
         </li>
         {!authLoading && user?.id === post?.uid && (
           <li>

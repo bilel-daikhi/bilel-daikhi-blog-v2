@@ -1,9 +1,8 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
 
  
 import {Link, Link as routerLink, useParams} from "react-router-dom";
-import {db} from "../lib/firebase";
-import {doc, onSnapshot} from "firebase/firestore"; 
+ 
 import { dracula } from "react-syntax-highlighter/dist/esm/styles/prism";
 import DOMPurify from "dompurify";
 import { formatDistanceToNow, set } from "date-fns";
@@ -14,30 +13,23 @@ import PostTags from "../components/posts/PostTags";
 import PopularPosts from "../components/posts/PopularPosts";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import SelectedPostTags from "../components/SelectedPostTags";
+import Likes from "../components/posts/Likes";
  
 
 export default function SelectedPost() {
   const {user, isLoading: authLoading} = useAuth();
     const {postId} = useParams();
     const { post,fetchPost, isPostLoading, error} = usePostById(postId);
-     
-    const {toggleLike, isLikeLoading} = useToggleLike({
-        id: postId,
-        isLiked: post?.likes?.includes(user?.id),
-        uid: user?.id,
-        onSuccess: fetchPost  
-    });
+    
+  
  
     if (isPostLoading) return <div>Loading post...</div>;
-    if (isLikeLoading) return <div>Like post...</div>;
-    
-    if (error) return <div>Error loading post: {error}</div>;
+  
+     
 
     // Handle case where post is null/undefined
     if (!isPostLoading && !post) return <div>Post not found</div>;
-
-    // Destructure with default values AFTER null check
-    const { likes = [], category, uid } = post; 
+ 
 
   return (
       <>
@@ -64,19 +56,8 @@ export default function SelectedPost() {
                       <li><i className="fa-solid fa-calendar-days"></i> {post.date && formatDistanceToNow(post?.date)} ago</li>
                       <li><strong><i className="fa-solid fa-user"></i> Bilel Daikhi</strong></li>
                     <li>
-                       <Link 
-                                  onClick={toggleLike}
-                                  disabled={authLoading || isLikeLoading}
-                                   
-                                >
-                                  {!isPostLoading && post?.likes?.includes(user?.id) ? (
-                                    <i className="fa-solid fa-heart mr-1 text-danger" />
-                                  ) : (
-                                    <i className="fa-regular fa-heart mr-1" />
-                                  )}
-                                  {post?.likes?.length || 0} Likes
-                                </Link>
-                    </li>
+                {post &&  <Likes post={post} user={user} fetchPost={fetchPost} />
+                   } </li>
                    
                    
                     </ul>
