@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { db } from "../lib/firebase";
 import { useCollectionData } from "react-firebase-hooks/firestore";
@@ -127,7 +127,7 @@ export function usePopularPosts() {
   return { posts, isLoading };
 }
 
-export function useToggleLike({ id, isLiked, uid }) {
+export function useToggleLike({ id, isLiked, uid, onSuccess  }) {
   const [isLoading, setLoading] = useState(false);
   async function toggleLike() {
     setLoading(true);
@@ -140,6 +140,10 @@ export function useToggleLike({ id, isLiked, uid }) {
       await updateDoc(docRef, {
       likes: isLiked ? arrayRemove(uid) : arrayUnion(uid),
     });
+    // Execute success callback if provided
+      if (onSuccess) {
+        await onSuccess();  // Use this to trigger data refresh in parent
+      }
   }catch(error){
     console.error(JSON.stringify(error))
     toast.error("An error occurred. Please try again later.");
@@ -172,34 +176,36 @@ export function useDeletePost(id) {
   }
 
   return { deletePost, isLoading };
-}
-export function usePostById(id) {
+}export function usePostById(id) {
   const [post, setPost] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchPost = async () => {
-      setIsLoading(true);
-      try {
-        const docRef = doc(db, "posts", id);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          setPost({ id: docSnap.id, ...docSnap.data() });
-        } else {
-          setError("Post not found");
-        }
-      } catch (err) {
-        setError(err);
-      } finally {
-        setIsLoading(false);
+  const fetchPost = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const docRef = doc(db, "posts", id);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        setPost({ id: docSnap.id, ...docSnap.data() });
+      } else {
+        setError("Post not found");
       }
-    };
-
-    if (id) {
-      fetchPost();
+    } catch (err) {
+      setError(err);
+    } finally {
+      setIsLoading(false);
     }
-  }, [id]);
+  }, [id]); // Add id as dependency
 
-  return { post, isLoading, error };
+  useEffect(() => {
+    if (id) fetchPost();
+  }, [id, fetchPost]);
+
+  return { 
+    post,
+    fetchPost, // Expose fetchPost for manual refreshes
+    isLoading, 
+    error 
+  };
 }

@@ -19,23 +19,22 @@ import SelectedPostTags from "../components/SelectedPostTags";
 export default function SelectedPost() {
   const {user, isLoading: authLoading} = useAuth();
     const {postId} = useParams();
-    const { post, isPostLoading, error} = usePostById(postId);
-    
-    // Always call hooks unconditionally at the top
-    const {toggleLike, isLoading} = useToggleLike({
+    const { post,fetchPost, isPostLoading, error} = usePostById(postId);
+     
+    const {toggleLike, isLikeLoading} = useToggleLike({
         id: postId,
-        isLiked: post?.likes?.includes(user?.id) ?? false,
+        isLiked: post?.likes?.includes(user?.id),
         uid: user?.id,
+        onSuccess: fetchPost  
     });
-
-    // Handle loading state
+ 
     if (isPostLoading) return <div>Loading post...</div>;
+    if (isLikeLoading) return <div>Like post...</div>;
     
-    // Handle error state
     if (error) return <div>Error loading post: {error}</div>;
 
     // Handle case where post is null/undefined
-    if (!post) return <div>Post not found</div>;
+    if (!isPostLoading && !post) return <div>Post not found</div>;
 
     // Destructure with default values AFTER null check
     const { likes = [], category, uid } = post; 
@@ -64,9 +63,20 @@ export default function SelectedPost() {
                     <ul className="entry-meta clearfix">
                       <li><i className="fa-solid fa-calendar-days"></i> {post.date && formatDistanceToNow(post?.date)} ago</li>
                       <li><strong><i className="fa-solid fa-user"></i> Bilel Daikhi</strong></li>
-                    <li><Link onClick={toggleLike} size='md' isLoading={authLoading || isLoading}>
-                       { post?.likes?.includes(user?.id) ? <i className="fa-regular fa-heart mr-1"></i>: <i className="fa-solid fa-heart mr-1"></i> }  
-                       {post.likes?.length} Likes </Link></li>
+                    <li>
+                       <Link 
+                                  onClick={toggleLike}
+                                  disabled={authLoading || isLikeLoading}
+                                   
+                                >
+                                  {!isPostLoading && post?.likes?.includes(user?.id) ? (
+                                    <i className="fa-solid fa-heart mr-1 text-danger" />
+                                  ) : (
+                                    <i className="fa-regular fa-heart mr-1" />
+                                  )}
+                                  {post?.likes?.length || 0} Likes
+                                </Link>
+                    </li>
                    
                    
                     </ul>
