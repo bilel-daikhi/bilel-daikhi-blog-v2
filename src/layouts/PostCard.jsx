@@ -1,66 +1,123 @@
-import React, { useState } from "react"; 
-import {useAuth} from "../hooks/auths";
-import {formatDistanceToNow} from "date-fns"; 
-import {useDeletePost, useToggleLike} from "../hooks/posts";
-import {Link, Link as routerLink} from "react-router-dom";
-import { useUser } from "../hooks/user"; 
+import React from "react";
+import { useAuth } from "../hooks/auths";
+import { formatDistanceToNow } from "date-fns";
+import { useDeletePost, usePostById, useToggleLike } from "../hooks/posts";
+ 
+import { useUser } from "../hooks/user";
 import DOMPurify from "dompurify";
 import { useCategories } from "../hooks/categories";
 import { useComments } from "../hooks/comments";
-const PostCard = ({post}) => {
-  const {user, isLoading: authLoading} = useAuth();
+import { Link } from "react-router-dom";
 
-  const {id, likes,category, uid} = post;
-  const {comments, isCommentsLoading} = useComments(id); 
-  const isLiked = likes.includes(user?.id);
-  const {toggleLike, isLoading} = useToggleLike({
-    id,
-    isLiked,
+const PostCard = ({ postId,autherId }) => {
+  
+  const { user, isLoading: authLoading } = useAuth();
+  const { post,fetchPost, isLoading: isLoadingPost, error, mutate: mutatePost } = usePostById(postId);
+  const { comments, isLoading: isCommentsLoading } = useComments(post?.id);
+  const { toggleLike, isLoading: isLikeLoading } = useToggleLike({
+    id: post?.id,
+    isLiked: post?.likes?.includes(user?.id),
     uid: user?.id,
+    onSuccess: fetchPost // Add this line to trigger refresh
   });
+  const { deletePost, isLoading: isDeleteLoading } = useDeletePost(post?.id);
 
-  const {categories:selectedCategory, isLoading:isLoadingCategory} = useCategories(category);
-  const {deletePost, isLoading: deleteLoading} = useDeletePost(post.id);
-  //const {user: users, isLoading: userLoading} = useUser(post.uid);
-   
+  // Get author information
+  const { user: author, isLoading: isAuthorLoading } = useUser(autherId);
+
+  // Get category information
+  const categoryId = post?.category;
+  const { categories: selectedCategory, isLoading: isCategoryLoading } = 
+    useCategories(categoryId);
+
+  if (isLoadingPost) return <>Loading...</>;
+
+  // Safely access post content
+  const firstBlock = post?.blocks?.[0];
+  const sanitizedContent = firstBlock?.type === "text" 
+    ? DOMPurify.sanitize(firstBlock.content)
+    : "";
+  const showReadMore = sanitizedContent.length > 100;
+
   return (
-    <div class="entry bf-gallery clearfix">
-     <div class="entry-title">
-      <h2><Link  textDecoration='none'
-            _hover={{textDecoration: "none"}}
-            as={routerLink}
-            to={`/posts/${post?.id}`}>{post.title}</Link></h2>
-    </div>
-    <ul class="entry-meta clearfix">
-      <li><i className="fa-regular fa-calendar"></i> {formatDistanceToNow(post.date)} ago</li>
-      <li><strong><i className="fa-solid fa-user"></i> Bilel Daikhi</strong></li>
-      <li><strong><i className="fa-solid fa-tag"></i> {!isLoadingCategory && selectedCategory[0].name}</strong></li>
-      <li><strong><i className="fa-regular fa-comment"></i> {comments ? comments.length : 0} Comments</strong></li>
-       <li><Link onClick={toggleLike} size='md' isLoading={authLoading || isLoading}>
-       {isLiked ? <i className="fa-regular fa-heart mr-1"></i>: <i className="fa-solid fa-heart mr-1"></i> }  
-       {post.likes.length} Likes </Link></li>
-      {!authLoading && user?.id === post.uid && (
-             <li> 
-             <Link onClick={deletePost}><i class="fa-regular fa-trash-can color-danger"></i></Link>
-               </li>
+    <div className="entry bf-gallery clearfix">
+      <div className="entry-title">
+        <h2>
+          <routerLink to={`/posts/${post?.id}`}>
+            {post?.title}
+          </routerLink>
+        </h2>
+      </div>
+
+      <ul className="entry-meta clearfix">
+        <li>
+          <i className="fa-regular fa-calendar" />{" "}
+          {formatDistanceToNow(post?.date)} ago
+        </li>
+        <li>
+          <strong>
+            <i className="fa-solid fa-user" />{" "}
+            {isAuthorLoading ? "Loading..." : author?.displayName || "Anonymous"}
+          </strong>
+        </li>
+        <li>
+          <strong>
+            <i className="fa-solid fa-tag" />{" "}
+            {isCategoryLoading
+              ? "Loading..."
+              : selectedCategory?.[0]?.name || "Uncategorized"}
+          </strong>
+        </li>
+        <li>
+          <strong>
+            <i className="fa-regular fa-comment" />{" "}
+            {isCommentsLoading ? "..." : comments?.length || 0} Comments
+          </strong>
+        </li>
+        <li>
+          <Link 
+            onClick={toggleLike}
+            disabled={authLoading || isLikeLoading}
+             
+          >
+            {post?.likes?.includes(user?.id) ? (
+              <i className="fa-solid fa-heart mr-1 text-danger" />
+            ) : (
+              <i className="fa-regular fa-heart mr-1" />
             )}
-    </ul>
-    <div class="entry-content">
-   { post.blocks[0].type === "text" && 
-                <div
-                  key={post.blocks[0].id}
-                  className="prose mb-4"
-                  dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.blocks[0].content.substring(0, 100)) }}
-                />}
-    
-      {DOMPurify.sanitize(post.blocks[0].content).length > 100 && <Link  textDecoration='none'
-            _hover={{textDecoration: "none"}}
-            as={routerLink}
-            to={`/posts/${post?.id}`} className="more-link">Read More</Link>}
+            {post?.likes?.length || 0} Likes
+          </Link>
+        </li>
+        {!authLoading && user?.id === post?.uid && (
+          <li>
+            <Link
+              onClick={deletePost}
+              disabled={isDeleteLoading}
+              className="text-danger"
+            
+            >
+              <i className="fa-regular fa-trash-can text-danger" />
+            </Link>
+          </li>
+        )}
+      </ul>
+
+      <div className="entry-content">
+        {firstBlock?.type === "text" && (
+          <div
+            className="prose mb-4"
+            dangerouslySetInnerHTML={{
+              __html: sanitizedContent.substring(0, 100),
+            }}
+          />
+        )}
+        {showReadMore && (
+          <Link to={`/posts/${post?.id}`} className="more-link">
+            Read More
+          </Link>
+        )}
+      </div>
     </div>
-  </div>
-
-
   );
 };
 

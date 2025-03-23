@@ -46,7 +46,7 @@ export default function PostList() {
 
                       {posts && posts.map((post,index) => (
 
-                       <PostCard key={index} post={post} />
+                       <PostCard key={index} postId={post.id} autherId={post.uid} />
 
                       ))}
 
