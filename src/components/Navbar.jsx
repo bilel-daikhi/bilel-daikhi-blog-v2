@@ -61,15 +61,17 @@ export default function Navbar() {
               Contact
             </NavLink>
           </li> 
-          {user && ( <li className="nav-item">
-            <NavLink
-              className="nav-link px-lg-3 py-3 py-lg-4"
-              to="/categories"
-              activeClassName="active"
-            >
-              Categories
-            </NavLink>
-          </li> )}
+          <li className="nav-item">
+          {!authLoading && user && user.role}
+          </li>
+          {!authLoading && user && (user.role === "admin") && (
+            <li className="nav-item">
+              <NavLink className="nav-link px-lg-3 py-3 py-lg-4" to="/categories">
+                Categories 
+              </NavLink>
+            </li>
+          )}
+
           <li className="nav-item">
             <NavLink
               className="nav-link px-lg-3 py-3 py-lg-4"
@@ -79,7 +81,7 @@ export default function Navbar() {
               About
             </NavLink>
           </li>
-          {user && (   <li className="nav-item">
+          {!authLoading && user && (user.role === "admin") && (   <li className="nav-item">
             <NavLink
               className="nav-link px-lg-3 py-3 py-lg-4"
               to="/tags"

@@ -51,6 +51,7 @@ export function useGoogleLogin() {
         username: res.user.email,
         avatar: res.user.photoURL,
         date: Date.now(),
+        role: "user",
       });
       toast.success("You are logged in", {
         isClosable: true,
@@ -154,6 +155,7 @@ export function useRegister() {
           username: username.toLowerCase(),
           avatar: "",
           date: Date.now(),
+          role: "user",
         });
         toast.success("Account created", {
           isClosable: true,
