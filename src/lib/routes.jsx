@@ -10,6 +10,8 @@ import LOGIN from "../layouts/auth/Login";
 import ErrorPage from "../layouts/Error";
 import TagsList from "../components/tags/TagsList";
 import Categories from "../layouts/categories";
+import Unauthorized from "../layouts/auth/Unauthorized";
+import ProtectedRoute from "./ProtectedRoute";
 
 export const ROOT_PATH = "/";
 export const LOGIN_PATH = "/login";
@@ -19,6 +21,7 @@ export const CATEGORIES_PATH = "/categories";
 export const TAGS_PATH = "/tags";
 export const ADD_POST_PATH = "/add-post";
 export const FIND_POST_PATH = "/posts/:postId";
+export const UNAUTHORIZED = "/unauthorized";
 
 export const router = createBrowserRouter([{
   element:<Layout />,
@@ -27,11 +30,24 @@ export const router = createBrowserRouter([{
   {path: ROOT_PATH, element: <Home />},
   {path: LOGIN_PATH, element: <LOGIN />},
   {path: CONTACT_PATH, element: <Contact />},
-  {path: CATEGORIES_PATH, element: <Categories />},
+ 
   {path: ABOUT_PATH, element: <About />},
   {path: FIND_POST_PATH, element: <SelectedPost />},
-  {path: ADD_POST_PATH, element: <NewPost />},
-  {path: TAGS_PATH, element: <TagsList />},
+ 
+ 
+  {path: UNAUTHORIZED, element: <Unauthorized />},
+   // Protected Categories Page
+   {
+    element: <ProtectedRoute allowedRoles={["admin"]} />, // Only admins  can access
+    children: [{ path: CATEGORIES_PATH, element: <Categories /> }],
+  }, {
+    element: <ProtectedRoute allowedRoles={["admin"]} />, // Only admins  can access
+    children: [{ path: TAGS_PATH, element: <TagsList /> }],
+  },
+  {
+    element: <ProtectedRoute allowedRoles={["admin"]} />, // Only admins can access
+    children: [{ path: ADD_POST_PATH, element: <NewPost /> }],
+  },
 ]}
   
 ]);

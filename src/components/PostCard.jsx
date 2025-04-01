@@ -1,7 +1,7 @@
 import React from "react";
 import { useAuth } from "../hooks/auths";
 import { formatDistanceToNow } from "date-fns";
-import { useDeletePost, usePostById, useToggleLike } from "../hooks/posts";
+import { useDeletePost, usePostById } from "../hooks/posts";
  
 import { useUser } from "../hooks/user";
 import DOMPurify from "dompurify";
@@ -13,14 +13,9 @@ import Likes from "./posts/Likes";
 const PostCard = ({ postId,autherId }) => {
   
   const { user, isLoading: authLoading } = useAuth();
-  const { post,fetchPost, isLoading: isLoadingPost, error, mutate: mutatePost } = usePostById(postId);
+  const { post,fetchPost, isLoading: isLoadingPost, error } = usePostById(postId);
   const { comments, isLoading: isCommentsLoading } = useComments(post?.id);
-  const { toggleLike, isLoading: isLikeLoading } = useToggleLike({
-    id: post?.id,
-    isLiked: post?.likes?.includes(user?.id),
-    uid: user?.id,
-    onSuccess: fetchPost // Add this line to trigger refresh
-  });
+   
   const { deletePost, isLoading: isDeleteLoading } = useDeletePost(post?.id);
 
   // Get author information
@@ -76,7 +71,7 @@ const PostCard = ({ postId,autherId }) => {
           </strong>
         </li>
         <li>
-        {post &&  <Likes post={post} user={user} fetchPost={fetchPost} />
+        {!isLoadingPost &&  <Likes post={post} fetchPost={fetchPost} />
                    }
         </li>
         {!authLoading && user?.id === post?.uid && (

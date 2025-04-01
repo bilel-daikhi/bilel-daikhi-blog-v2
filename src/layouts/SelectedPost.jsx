@@ -56,7 +56,7 @@ export default function SelectedPost() {
                       <li><i className="fa-solid fa-calendar-days"></i> {post.date && formatDistanceToNow(post?.date)} ago</li>
                       <li><strong><i className="fa-solid fa-user"></i> Bilel Daikhi</strong></li>
                     <li>
-                {post &&  <Likes post={post} user={user} fetchPost={fetchPost} />
+                {post &&  <Likes post={post}   fetchPost={fetchPost} />
                    } </li>
                    
                    
