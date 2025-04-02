@@ -3,7 +3,6 @@ import {
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
-  signOut,
   onAuthStateChanged,
 } from "firebase/auth";
 import { useAuthState, useSignOut } from "react-firebase-hooks/auth";
@@ -55,30 +54,6 @@ export const AuthProvider = ({ children }) => {
 // Custom Hook to Access Auth Context
 export const useAuth = () => useContext(AuthContext);
 
-// This code is for fatching User data
-/*export function useAuth() {
-  const [authUser, authLoading, error] = useAuthState(auth);
-  const [isLoading, setLoading] = useState(true);
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    async function fetchData() {
-      setLoading(true);
-      const ref = doc(db, "users", authUser.uid);
-      const docSnap = await getDoc(ref);
-      setUser(docSnap.data());
-      setLoading(false);
-    }
-
-    if (!authLoading) {
-      if (authUser) fetchData();
-      else setLoading(false); // Not signed in
-    }
-  }, [authLoading]);
-
-  return { user, isLoading, error };
-}
-  */
 export function useGoogleLogin() {
   const [isLoadingGoogle, setLoadingGoogle] = useState(false);
   // const toast = useToast();
