@@ -32,7 +32,10 @@ export default function Login() {
       password: data.password,
       redirectTo: ROOT_PATH,
     });
-    if (succeeded) reset();
+    if (succeeded) {
+      reset();
+      window.location.reload();
+    }
   }
   async function handleGoogleSignIn(e) {
     e.preventDefault();
@@ -40,10 +43,10 @@ export default function Login() {
       redirectTo: ROOT_PATH,
     });
     if (succeeded) {
-      
       reset();
+      window.location.reload();
     }
-  } 
+  }
   return (
     <section id="content">
       <div class="content-wrap">

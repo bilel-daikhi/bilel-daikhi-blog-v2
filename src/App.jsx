@@ -1,11 +1,14 @@
 import "./App.css";
 import { RouterProvider } from "react-router-dom";
 import { router } from "./lib/routes";
+import { AuthProvider } from "./hooks/auths";
 // new comment to publish on git hub 2
 function App() {
   return (
     <>
-      <RouterProvider router={router} />
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
     </>
   );
 }
