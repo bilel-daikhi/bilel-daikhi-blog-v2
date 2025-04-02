@@ -42,9 +42,11 @@ This is the second version of the **Bilel Daikhi Blog**, a personal blogging pla
 
 - `/src`: Contains the source code.
   - `/components`: Reusable React components.
-  - `/pages`: Page-level components.
   - `/assets`: Static assets like images and fonts.
-  - `/styles`: Global and component-specific styles.
+  - `/hooks`: Custom React hooks for managing state and logic.
+  - `/layouts`: Layout components for consistent page structure.
+  - `/lib`: Utility libraries and helper functions.
+  - `/utils`: General utility functions and constants.
 
 ## Contributing
 
