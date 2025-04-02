@@ -3,18 +3,60 @@ import {
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
+  signOut,
+  onAuthStateChanged,
 } from "firebase/auth";
 import { useAuthState, useSignOut } from "react-firebase-hooks/auth";
 import { auth, db } from "../lib/firebase";
-import { useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { setDoc, doc, getDoc } from "firebase/firestore";
 import { LOGIN_PATH, ROOT_PATH } from "../lib/routes";
 import isUsernameExists from "../utils/isUsernameExists";
 import { toast } from "react-toastify";
 
+const AuthContext = createContext();
+
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
+      if (authUser) {
+        try {
+          const ref = doc(db, "users", authUser.uid);
+          const docSnap = await getDoc(ref);
+          setUser(
+            docSnap.exists()
+              ? docSnap.data()
+              : { uid: authUser.uid, email: authUser.email }
+          );
+        } catch (err) {
+          setError(err);
+        }
+      } else {
+        setUser(null);
+      }
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  return (
+    <AuthContext.Provider value={{ user, loading, error }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+// Custom Hook to Access Auth Context
+export const useAuth = () => useContext(AuthContext);
+
 // This code is for fatching User data
-export function useAuth() {
+/*export function useAuth() {
   const [authUser, authLoading, error] = useAuthState(auth);
   const [isLoading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
@@ -36,6 +78,7 @@ export function useAuth() {
 
   return { user, isLoading, error };
 }
+  */
 export function useGoogleLogin() {
   const [isLoadingGoogle, setLoadingGoogle] = useState(false);
   // const toast = useToast();
@@ -46,24 +89,29 @@ export function useGoogleLogin() {
       const googleAuthProvider = new GoogleAuthProvider();
       const res = await signInWithPopup(auth, googleAuthProvider);
       console.log("response google auth: " + JSON.stringify(res));
-      await setDoc(doc(db, "users", res.user.uid), {
-        id: res.user.uid,
-        username: res.user.email,
-        avatar: res.user.photoURL,
-        date: Date.now(),
-        role: "user",
-      });
+      const userRef = doc(db, "users", res.user.uid);
+      const userSnap = await getDoc(userRef);
+
+      if (!userSnap.exists()) {
+        await setDoc(userRef, {
+          id: res.user.uid,
+          username: res.user.email,
+          avatar: res.user.photoURL,
+          date: Date.now(),
+          role: "user",
+        });
+      }
       toast.success("You are logged in", {
         isClosable: true,
         autoClose: 3000,
       });
-       navigate(redirectTo);
+      navigate(redirectTo);
     } catch (error) {
       toast.error("Logging in failed", {
         isClosable: true,
         autoClose: 3000,
       });
-       setLoadingGoogle(false);
+      setLoadingGoogle(false);
     } finally {
       setLoadingGoogle(false);
     }
@@ -94,7 +142,6 @@ export function useLogin() {
         isClosable: true,
         autoClose: 3000,
       });
- 
     } finally {
       setLoading(false);
     }
@@ -118,7 +165,7 @@ export function useLogout() {
 
       navigate(LOGIN_PATH);
     }
-    }
+  }
 
   return { logout, isLoading };
 }
@@ -169,7 +216,6 @@ export function useRegister() {
           isClosable: true,
           autoClose: 3000,
         });
-        
       } finally {
         setLoading(false);
       }

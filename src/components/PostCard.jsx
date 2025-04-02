@@ -2,7 +2,7 @@ import React from "react";
 import { useAuth } from "../hooks/auths";
 import { formatDistanceToNow } from "date-fns";
 import { useDeletePost, usePostById } from "../hooks/posts";
- 
+
 import { useUser } from "../hooks/user";
 import DOMPurify from "dompurify";
 import { useCategories } from "../hooks/categories";
@@ -10,12 +10,16 @@ import { useComments } from "../hooks/comments";
 import { Link } from "react-router-dom";
 import Likes from "./posts/Likes";
 
-const PostCard = ({ postId,autherId }) => {
-  
+const PostCard = ({ postId, autherId }) => {
   const { user, isLoading: authLoading } = useAuth();
-  const { post,fetchPost, isLoading: isLoadingPost, error } = usePostById(postId);
+  const {
+    post,
+    fetchPost,
+    isLoading: isLoadingPost,
+    error,
+  } = usePostById(postId);
   const { comments, isLoading: isCommentsLoading } = useComments(post?.id);
-   
+
   const { deletePost, isLoading: isDeleteLoading } = useDeletePost(post?.id);
 
   // Get author information
@@ -23,25 +27,22 @@ const PostCard = ({ postId,autherId }) => {
 
   // Get category information
   const categoryId = post?.category;
-  const { categories: selectedCategory, isLoading: isCategoryLoading } = 
+  const { categories: selectedCategory, isLoading: isCategoryLoading } =
     useCategories(categoryId);
 
   if (isLoadingPost) return <>Loading...</>;
 
   // Safely access post content
   const firstBlock = post?.blocks?.[0];
-  const sanitizedContent = firstBlock?.type === "text" 
-    ? DOMPurify.sanitize(firstBlock.content)
-    : "";
+  const sanitizedContent =
+    firstBlock?.type === "text" ? DOMPurify.sanitize(firstBlock.content) : "";
   const showReadMore = sanitizedContent.length > 100;
 
   return (
     <div className="entry bf-gallery clearfix">
       <div className="entry-title">
         <h2>
-          <Link to={`/posts/${post?.id}`}>
-            {post?.title}
-          </Link>
+          <Link to={`/posts/${post?.id}`}>{post?.title}</Link>
         </h2>
       </div>
 
@@ -53,7 +54,9 @@ const PostCard = ({ postId,autherId }) => {
         <li>
           <strong>
             <i className="fa-solid fa-user" />{" "}
-            {isAuthorLoading ? "Loading..." : author?.displayName || "Anonymous"}
+            {isAuthorLoading
+              ? "Loading..."
+              : author?.displayName || "Anonymous"}
           </strong>
         </li>
         <li>
@@ -70,17 +73,13 @@ const PostCard = ({ postId,autherId }) => {
             {isCommentsLoading ? "..." : comments?.length || 0} Comments
           </strong>
         </li>
-        <li>
-        {!isLoadingPost &&  <Likes post={post} fetchPost={fetchPost} />
-                   }
-        </li>
+        <li>{!isLoadingPost && <Likes post={post} fetchPost={fetchPost} />}</li>
         {!authLoading && user?.id === post?.uid && (
           <li>
             <Link
               onClick={deletePost}
               disabled={isDeleteLoading}
               className="text-danger"
-            
             >
               <i className="fa-regular fa-trash-can text-danger" />
             </Link>
